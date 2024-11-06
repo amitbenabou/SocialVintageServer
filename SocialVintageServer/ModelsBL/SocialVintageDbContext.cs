@@ -9,7 +9,6 @@ public partial class SocialVintageDbContext : DbContext
     public User? GetUser(string email)
     {
         return this.Users.Where(u => u.UserMail == email)
-                            .Include(u => u.Pswrd)
                             .FirstOrDefault();
     }
 }

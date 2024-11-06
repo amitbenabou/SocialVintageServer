@@ -15,6 +15,8 @@ namespace SocialVintageServer.DTO
         public bool HasStore { get; set; }
 
         public string Pswrd { get; set; } = null!;
+        public string ProfileImagePath { get; set; } = "";
+
 
 
         public UserDto(Models.User modelUser)
