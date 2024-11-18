@@ -22,7 +22,7 @@ CREATE TABLE [User]
 (
 UserId int primary key identity,
 UserName nvarchar(50) not null,
-UserMail nvarchar(50) not null,
+UserMail nvarchar(50) unique not null,
 Pswrd nvarchar(50) not null,
 UserAdress nvarchar(50) not null,
 HasStore bit not null
