@@ -80,6 +80,31 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
+    [HttpPost("AddStore")]
+    public IActionResult AddStore([FromBody] SocialVintageServer.DTO.StoreDto storeDto)
+    {
+        try
+        {
+            HttpContext.Session.Clear(); //Logout any previous login attempt
+
+            //Create model user class
+            SocialVintageServer.Models.Store modelsStore = storeDto.GetModel();
+
+            context.Stores.Add(modelsStore);
+            context.SaveChanges();
+
+            //User was added!
+            SocialVintageServer.DTO.StoreDto dtoStore = new SocialVintageServer.DTO.StoreDto(modelsStore);
+            dtoStore.LogoExt = GetProfileImageVirtualPath(dtoStore.StoreId);
+            return Ok(dtoStore);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
 
 
     private string GetProfileImageVirtualPath(int userId)

@@ -117,6 +117,8 @@ SELECT * FROM [Status];
 Insert Into [User] Values('admin', 'amit@gmail.com', '1011', 'yeshurun 40 hod hasharon', 1);
 SELECT * FROM [User];
 
+SELECT * FROM Store;
+
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
 Go
 
