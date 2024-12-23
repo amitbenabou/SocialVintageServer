@@ -107,6 +107,7 @@ SELECT * FROM [Shipping];
 
 INSERT INTO Catagory (CatagoryName) Values ('Women');
 INSERT INTO Catagory (CatagoryName) Values ('Men');
+INSERT INTO Catagory (CatagoryName) Values ('unisex');
 SELECT * FROM Catagory;
 
 INSERT INTO [Status] (StatusName) Values ('Approved');
