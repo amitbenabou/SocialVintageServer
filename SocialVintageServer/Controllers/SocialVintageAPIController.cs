@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialVintageServer.Models;
+using Swashbuckle.AspNetCore.Swagger;
 
 
 
@@ -42,10 +43,10 @@ public class SocialVintageAPIController : ControllerBase
                 return Unauthorized();
             }
 
-            HttpContext.Session.SetString("loggedInUser", modelsUser.UserMail);
+            HttpContext.Session.SetString("LoggedInUser", modelsUser.UserMail);
 
             SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(modelsUser);
-            //dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
+            dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
             return Ok(dtoUser);
         }
         catch (Exception ex)
@@ -85,8 +86,7 @@ public class SocialVintageAPIController : ControllerBase
     {
         try
         {
-            HttpContext.Session.Clear(); //Logout any previous login attempt
-
+            
             //Create model user class
             SocialVintageServer.Models.Store modelsStore = storeDto.GetModel();
 
@@ -95,7 +95,7 @@ public class SocialVintageAPIController : ControllerBase
 
             //User was added!
             SocialVintageServer.DTO.StoreDto dtoStore = new SocialVintageServer.DTO.StoreDto(modelsStore);
-            dtoStore.LogoExt = GetProfileImageVirtualPath(dtoStore.StoreId);
+            dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.StoreId, true);
             return Ok(dtoStore);
         }
         catch (Exception ex)
@@ -107,10 +107,12 @@ public class SocialVintageAPIController : ControllerBase
 
 
 
-    private string GetProfileImageVirtualPath(int userId)
+    private string GetProfileImageVirtualPath(int userId, bool IsStore = false)
     {
         string virtualPath = $"/profileImages/{userId}";
         string path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\{userId}.png";
+        if (IsStore)
+            path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\S{userId}.png";
         if (System.IO.File.Exists(path))
         {
             virtualPath += ".png";
@@ -118,6 +120,8 @@ public class SocialVintageAPIController : ControllerBase
         else
         {
             path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\{userId}.jpg";
+            if (IsStore)
+                path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\S{userId}.jpg";
             if (System.IO.File.Exists(path))
             {
                 virtualPath += ".jpg";
@@ -125,6 +129,8 @@ public class SocialVintageAPIController : ControllerBase
             else
             {
                 virtualPath = $"/profileImages/default.png";
+                if (IsStore)
+                    virtualPath = $"/profileImages/storedefault.png";
             }
         }
 
@@ -133,10 +139,10 @@ public class SocialVintageAPIController : ControllerBase
 
 
     [HttpPost("UploadProfileImage")]
-    public async Task<IActionResult> UploadProfileImageAsync(IFormFile file)
+    public async Task<IActionResult> UploadProfileImageAsync(IFormFile file, [FromQuery] bool IsStore)
     {
         //Check if who is logged in
-        string? userEmail = HttpContext.Session.GetString("loggedInUser");
+        string? userEmail = HttpContext.Session.GetString("LoggedInUser");
         if (string.IsNullOrEmpty(userEmail))
         {
             return Unauthorized("User is not logged in");
@@ -144,6 +150,7 @@ public class SocialVintageAPIController : ControllerBase
 
         //Get model user class from DB with matching email. 
         SocialVintageServer.Models.User? user = context.GetUser(userEmail);
+        SocialVintageServer.Models.Store? store = context.Stores.Where(s => s.StoreId == user.UserId).FirstOrDefault();
         //Clear the tracking of all objects to avoid double tracking
         context.ChangeTracker.Clear();
 
@@ -173,6 +180,10 @@ public class SocialVintageAPIController : ControllerBase
 
             //Build path in the web root (better to a specific folder under the web root
             string filePath = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\{user.UserId}{extention}";
+            if (IsStore)
+            {
+                filePath = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\S{user.UserId}{extention}";
+            }
 
             using (var stream = System.IO.File.Create(filePath))
             {
@@ -191,10 +202,19 @@ public class SocialVintageAPIController : ControllerBase
             }
 
         }
-
-        SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(user);
-        dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
-        return Ok(dtoUser);
+        if (IsStore)
+        {
+            SocialVintageServer.DTO.StoreDto dtoStore = new SocialVintageServer.DTO.StoreDto(store);
+            dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.StoreId, true);
+            return Ok(dtoStore);
+        }
+        else
+        {
+            SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(user);
+            dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
+            return Ok(dtoUser);
+        }
+        
     }
 
     //Helper functions

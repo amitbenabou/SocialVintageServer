@@ -20,9 +20,6 @@ public partial class Store
 
     public int OptionId { get; set; }
 
-    [StringLength(5)]
-    public string LogoExt { get; set; } = null!;
-
     public int CatagoryId { get; set; }
 
     [ForeignKey("CatagoryId")]

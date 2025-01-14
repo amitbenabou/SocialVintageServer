@@ -18,8 +18,7 @@ namespace SocialVintageServer.DTO
 
         public int OptionId { get; set; }
 
-        [StringLength(5)]
-        public string LogoExt { get; set; } = null!;
+        public string ProfileImagePath { get; set; } = "";
 
         public int CatagoryId { get; set; }
 
@@ -29,7 +28,6 @@ namespace SocialVintageServer.DTO
             this.StoreName = modelStore.StoreName;
             this.Adress = modelStore.Adress;
             this.OptionId = modelStore.OptionId;
-            this.LogoExt = modelStore.LogoExt;
             this.CatagoryId = modelStore.CatagoryId;
         }
 
@@ -40,7 +38,6 @@ namespace SocialVintageServer.DTO
             s.StoreName = this.StoreName;
             s.Adress = this.Adress;
             s.OptionId = this.OptionId;
-            s.LogoExt = this.LogoExt;
             s.CatagoryId = this.CatagoryId;
             return s;
         }

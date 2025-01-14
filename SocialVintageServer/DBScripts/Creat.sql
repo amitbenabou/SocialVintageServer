@@ -47,7 +47,6 @@ StoreId int primary key REFERENCES [User](UserId),
 StoreName nvarchar(50) not null,
 Adress nvarchar(50) not null,
 OptionId int not null,
-LogoExt nvarchar(5) not null, 
 CatagoryId int not null,
 FOREIGN KEY (OptionId) REFERENCES [Shipping](OptionId),
 FOREIGN KEY (CatagoryId) REFERENCES [Catagory](CatagoryId)
@@ -116,6 +115,7 @@ INSERT INTO [Status] (StatusName) Values ('Delivered');
 SELECT * FROM [Status];
 
 Insert Into [User] Values('admin', 'amit@gmail.com', '1011', 'yeshurun 40 hod hasharon', 1);
+Insert Into [User] Values('ofer', 'ofer@gmail.com', '1011', 'yeshurun 40 hod hasharon', 0);
 SELECT * FROM [User];
 
 SELECT * FROM Store;
@@ -130,3 +130,5 @@ ALTER ROLE db_owner ADD MEMBER [AdminUser];
 Go
 
 --scaffold-DbContext "Server = (localdb)\MSSQLLocalDB;Initial Catalog=SocialVintageDB;User ID=AdminLogin;Password=amitbe1011!;" Microsoft.EntityFrameworkCore.SqlServer -OutPutDir Models -Context SocialVintageDbContext -DataAnnotations –force
+
+delete store
