@@ -15,7 +15,7 @@ namespace SocialVintageServer.DTO
 
         public string UserMail { get; set; } = null!;
 
-        public string? UserAdress { get; set; }
+        public string? UserAdress { get; set; } = null;
 
         public bool HasStore { get; set; }
 

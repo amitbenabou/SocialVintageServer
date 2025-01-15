@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SocialVintageServer.DTO;
 using SocialVintageServer.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -86,13 +87,26 @@ public class SocialVintageAPIController : ControllerBase
     {
         try
         {
-            
+            //Check if who is logged in
+            string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("User is not logged in");
+            }
             //Create model user class
             SocialVintageServer.Models.Store modelsStore = storeDto.GetModel();
 
             context.Stores.Add(modelsStore);
             context.SaveChanges();
 
+            User? u = context.GetUser(userEmail);
+            if (u != null)
+            {
+                u.HasStore = true;
+                context.Update(u);
+                context.SaveChanges();
+            }
+            
             //User was added!
             SocialVintageServer.DTO.StoreDto dtoStore = new SocialVintageServer.DTO.StoreDto(modelsStore);
             dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.StoreId, true);
@@ -103,6 +117,42 @@ public class SocialVintageAPIController : ControllerBase
             return BadRequest(ex.Message);
         }
 
+    }
+
+    [HttpPost("updateprofile")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UserDto userDto)
+    {
+        if (userDto == null)
+        {
+            return BadRequest("User data is null");
+        }
+
+        // חיפוש המשתמש לפי Id
+        var user = await context.Users.FindAsync(userDto.UserId);
+
+        if (user == null)
+        {
+            return NotFound($"User with ID {userDto.UserId} not found");
+        }
+
+        // עדכון השדות של המשתמש
+        user.UserName = userDto.UserName;
+        user.UserMail = userDto.UserMail;
+        user.UserAdress = userDto.UserAdress;
+        user.Pswrd = userDto.Pswrd;
+
+
+        try
+        {
+            // שמירת השינויים למסד הנתונים
+            await context.SaveChangesAsync();
+            return Ok(new { message = "Profile updated successfully" });
+        }
+        catch (Exception ex)
+        {
+            // טיפול בשגיאות
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", error = ex.Message });
+        }
     }
 
 

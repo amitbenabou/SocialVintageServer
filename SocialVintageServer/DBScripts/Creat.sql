@@ -132,3 +132,4 @@ Go
 --scaffold-DbContext "Server = (localdb)\MSSQLLocalDB;Initial Catalog=SocialVintageDB;User ID=AdminLogin;Password=amitbe1011!;" Microsoft.EntityFrameworkCore.SqlServer -OutPutDir Models -Context SocialVintageDbContext -DataAnnotations –force
 
 delete store
+update [User] set HasStore=0
