@@ -64,6 +64,13 @@ ItemInfo nvarchar(100) not null,
 FOREIGN KEY (StoreId) REFERENCES [Store](StoreId)
 );
 
+create table ItemsImages 
+(
+Id int primary key identity,
+ItemId int not null,
+FOREIGN KEY (ItemId) REFERENCES Item(ItemId)
+);
+
 CREATE TABLE [Status]
 (
 StatusId int primary key identity,
@@ -118,8 +125,18 @@ Insert Into [User] Values('admin', 'amit@gmail.com', '1011', 'yeshurun 40 hod ha
 Insert Into [User] Values('ofer', 'ofer@gmail.com', '1011', 'yeshurun 40 hod hasharon', 0);
 SELECT * FROM [User];
 
-SELECT * FROM Store;
 
+insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (1, 'Amit Store', 'Yeshuron, 40, Hod Hasharon, Israel', 1, 1)
+Go
+
+insert into Item values ('medium', 'Nike', 'Red', 100, 1, 'T Shirt')
+Go
+
+insert into ItemsImages values (1)
+go
+SELECT * FROM Store;
+select * from Item
+select * from ItemsImages
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
 Go
 

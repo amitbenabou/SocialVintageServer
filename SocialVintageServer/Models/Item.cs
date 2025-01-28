@@ -29,6 +29,9 @@ public partial class Item
     [StringLength(100)]
     public string ItemInfo { get; set; } = null!;
 
+    [InverseProperty("Item")]
+    public virtual ICollection<ItemsImage> ItemsImages { get; set; } = new List<ItemsImage>();
+
     [ForeignKey("StoreId")]
     [InverseProperty("Items")]
     public virtual Store Store { get; set; } = null!;

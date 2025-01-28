@@ -19,6 +19,8 @@ public partial class SocialVintageDbContext : DbContext
 
     public virtual DbSet<Item> Items { get; set; }
 
+    public virtual DbSet<ItemsImage> ItemsImages { get; set; }
+
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
@@ -39,57 +41,66 @@ public partial class SocialVintageDbContext : DbContext
     {
         modelBuilder.Entity<Catagory>(entity =>
         {
-            entity.HasKey(e => e.CatagoryId).HasName("PK__Catagory__3468E3B3D6A4877F");
+            entity.HasKey(e => e.CatagoryId).HasName("PK__Catagory__3468E3B396B007E3");
         });
 
         modelBuilder.Entity<Item>(entity =>
         {
-            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838BAF305838");
+            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838B8344BC78");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Items)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Item__StoreId__300424B4");
         });
 
+        modelBuilder.Entity<ItemsImage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ItemsIma__3214EC078B668286");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.ItemsImages)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ItemsImag__ItemI__32E0915F");
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BCF293AC085");
+            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BCF224488C9");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Order__StatusId__35BCFE0A");
+                .HasConstraintName("FK__Order__StatusId__38996AB5");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Order__UserId__34C8D9D1");
+                .HasConstraintName("FK__Order__UserId__37A5467C");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.ReviewId).HasName("PK__Review__74BC79CEA2B74249");
+            entity.HasKey(e => e.ReviewId).HasName("PK__Review__74BC79CEFCE47D09");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Reviews)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__StoreId__398D8EEE");
+                .HasConstraintName("FK__Review__StoreId__3C69FB99");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reviews)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__UserId__38996AB5");
+                .HasConstraintName("FK__Review__UserId__3B75D760");
         });
 
         modelBuilder.Entity<Shipping>(entity =>
         {
-            entity.HasKey(e => e.OptionId).HasName("PK__Shipping__92C7A1FFA66E2159");
+            entity.HasKey(e => e.OptionId).HasName("PK__Shipping__92C7A1FF56E176C3");
         });
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.StatusId).HasName("PK__Status__C8EE2063860DA165");
+            entity.HasKey(e => e.StatusId).HasName("PK__Status__C8EE206399F54917");
         });
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.StoreId).HasName("PK__Store__3B82F1019F86146E");
+            entity.HasKey(e => e.StoreId).HasName("PK__Store__3B82F101562C2171");
 
             entity.Property(e => e.StoreId).ValueGeneratedNever();
 
@@ -108,7 +119,7 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4C11A04537");
+            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4CD74A0D62");
 
             entity.HasMany(d => d.Stores).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(
@@ -116,14 +127,14 @@ public partial class SocialVintageDbContext : DbContext
                     r => r.HasOne<Store>().WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__FavoriteS__Store__3D5E1FD2"),
+                        .HasConstraintName("FK__FavoriteS__Store__403A8C7D"),
                     l => l.HasOne<User>().WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__FavoriteS__UserI__3C69FB99"),
+                        .HasConstraintName("FK__FavoriteS__UserI__3F466844"),
                     j =>
                     {
-                        j.HasKey("UserId", "StoreId").HasName("PK__Favorite__1430E35CE680D138");
+                        j.HasKey("UserId", "StoreId").HasName("PK__Favorite__1430E35C60439249");
                         j.ToTable("FavoriteStores");
                     });
         });

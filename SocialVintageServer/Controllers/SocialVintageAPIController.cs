@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SocialVintageServer.DTO;
 using SocialVintageServer.Models;
 using Swashbuckle.AspNetCore.Swagger;
@@ -296,6 +297,65 @@ public class SocialVintageAPIController : ControllerBase
 
         return false;
 
+    }
+
+    //this method return all basic data to the app
+    [HttpGet("GetBasicData")]
+    public IActionResult GetBasicData()
+    {
+        BasicDataDto basic = new BasicDataDto();
+
+        List<Status> statuses = context.Statuses.ToList();
+        List<Catagory> catagories = context.Catagories.ToList();
+        List<Shipping> shippings = context.Shippings.ToList();
+
+        basic.Statuss = new List<StatusDto>();
+        foreach (Status status in statuses) 
+        {
+            basic.Statuss.Add(new StatusDto(status));
+        }
+
+        basic.Catagories = new List<CatagoryDto>();
+        foreach (Catagory Catagory in catagories)
+        {
+            basic.Catagories.Add(new CatagoryDto(Catagory));
+        }
+
+        basic.Shippings = new List<ShippingDto>();
+        foreach (Shipping Shipping in shippings)
+        {
+            basic.Shippings.Add(new ShippingDto(Shipping));
+        }
+
+        return Ok(basic);
+    }
+
+    [HttpGet("GetItems")]
+    public IActionResult GetItems()
+    {
+        //Check if who is logged in
+        string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized("User is not logged in");
+        }
+        
+        List<ItemDto> items = new List<ItemDto>();
+
+        List<Item> modelItems = context.Items
+                                .Include(item => item.Store)
+                                .Include(item => item.ItemsImages)
+                                .ToList();
+
+        foreach (Item item in modelItems)
+        {
+            ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
+            p.Store.ProfileImagePath = GetProfileImageVirtualPath(p.Store.StoreId, true);
+            items.Add(p);
+            
+        }
+
+        return Ok(items);
     }
 }
 
