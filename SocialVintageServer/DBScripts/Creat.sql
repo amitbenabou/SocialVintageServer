@@ -18,6 +18,7 @@ Go
 Use SocialVintageDB 
 Go
 
+
 CREATE TABLE [User]
 (
 UserId int primary key identity,
@@ -134,7 +135,7 @@ Go
 
 insert into ItemsImages values (1)
 go
-SELECT * FROM Store;
+SELECT * FROM [User];
 select * from Item
 select * from ItemsImages
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
