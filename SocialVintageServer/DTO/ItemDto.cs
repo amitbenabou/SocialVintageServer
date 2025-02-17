@@ -58,5 +58,19 @@ namespace SocialVintageServer.DTO
 
             return virtualPath;
         }
+
+        public Models.Item GetModel()
+        {
+            Models. Item I = new Models.Item();
+            I.ItemId = this.ItemId;
+            I.Size = this.Size;
+            I.Brand = this.Brand;
+            I.Color = this.Color;
+            I.Price = this.Price;
+            I.StoreId = this.StoreId;
+            I.ItemInfo = this.ItemInfo;
+          //  I.ItemsImages = this.ItemsImages;
+            return I;
+        }
     }
 }

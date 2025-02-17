@@ -120,6 +120,39 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
+
+    //[HttpPost("AddItem")]
+    //public IActionResult AddItem([FromBody] SocialVintageServer.DTO.ItemDto itemDto)
+    //{
+    //    try
+    //    {
+    //        //Check if who is logged in
+    //        string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+    //        if (string.IsNullOrEmpty(userEmail))
+    //        {
+    //            return Unauthorized("User is not logged in");
+    //        }
+    //        //Create model user class
+    //        SocialVintageServer.Models.Item modelsItem = itemDto.GetModel();
+
+    //        context.Items.Add(modelsItem);
+    //        context.SaveChanges();
+
+
+    //        //Item was added!
+    //        //SocialVintageServer.DTO.ItemDto dtoitem = new SocialVintageServer.DTO.ItemDto(modelsItem);
+    //        ////dtoitem.ProfileImagePath = GetProfileImageVirtualPath(dtoitem.ItemId, true);
+    //        //return Ok(dtoitem);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest(ex.Message);
+    //    }
+
+    //}
+
+
+
     [HttpPost("updateprofile")]
     public async Task<IActionResult> UpdateProfile([FromBody] UserDto userDto)
     {
