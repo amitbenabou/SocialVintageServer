@@ -121,35 +121,41 @@ public class SocialVintageAPIController : ControllerBase
     }
 
 
-    //[HttpPost("AddItem")]
-    //public IActionResult AddItem([FromBody] SocialVintageServer.DTO.ItemDto itemDto)
-    //{
-    //    try
-    //    {
-    //        //Check if who is logged in
-    //        string? userEmail = HttpContext.Session.GetString("LoggedInUser");
-    //        if (string.IsNullOrEmpty(userEmail))
-    //        {
-    //            return Unauthorized("User is not logged in");
-    //        }
-    //        //Create model user class
-    //        SocialVintageServer.Models.Item modelsItem = itemDto.GetModel();
+    [HttpPost("AddItem")]
+    public IActionResult AddItem([FromBody] SocialVintageServer.DTO.ItemDto itemDto)
+    {
+        try
+        {
+            //Check if who is logged in
+            string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("User is not logged in");
+            }
+            User? theUser = context.GetUser(userEmail);
+            if (theUser == null || itemDto.StoreId != theUser.UserId)
+            {
+                return Unauthorized("User does not exist or trying to add item to a different store");
+            }
+            //Create model user class
+            SocialVintageServer.Models.Item modelsItem = itemDto.GetModel();
 
-    //        context.Items.Add(modelsItem);
-    //        context.SaveChanges();
+            context.Items.Add(modelsItem);
+            context.SaveChanges();
 
+            //Read the full item from databas (including the store and images)
+            modelsItem = context.GetItem(modelsItem.ItemId);
 
-    //        //Item was added!
-    //        //SocialVintageServer.DTO.ItemDto dtoitem = new SocialVintageServer.DTO.ItemDto(modelsItem);
-    //        ////dtoitem.ProfileImagePath = GetProfileImageVirtualPath(dtoitem.ItemId, true);
-    //        //return Ok(dtoitem);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return BadRequest(ex.Message);
-    //    }
+            //Item was added! (without images!!)
+            SocialVintageServer.DTO.ItemDto dtoitem = new SocialVintageServer.DTO.ItemDto(modelsItem, "");
+            return Ok(dtoitem);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
-    //}
+    }
 
 
 
@@ -189,7 +195,31 @@ public class SocialVintageAPIController : ControllerBase
         }
     }
 
+    //
+    private string GetItemImageVirtualPath(int itemImageId)
+    {
+        string virtualPath = $"/itemImages/{itemImageId}";
+        string path = $"{this.webHostEnvironment.WebRootPath}\\itemImages\\{itemImageId}.png";
+        if (System.IO.File.Exists(path))
+        {
+            virtualPath += ".png";
+        }
+        else
+        {
+            path = $"{this.webHostEnvironment.WebRootPath}\\itemImages\\{itemImageId}.jpg";
+            
+            if (System.IO.File.Exists(path))
+            {
+                virtualPath += ".jpg";
+            }
+            else
+            {
+                return "";
+            }
+        }
 
+        return virtualPath;
+    }
 
     private string GetProfileImageVirtualPath(int userId, bool IsStore = false)
     {
@@ -221,6 +251,94 @@ public class SocialVintageAPIController : ControllerBase
         return virtualPath;
     }
 
+
+    [HttpPost("UploadItemImage")]
+    public async Task<IActionResult> UploadItemImageAsync(IFormFile file, [FromQuery] int itemId)
+    {
+        //Check if who is logged in
+        string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized("User is not logged in");
+        }
+
+        //Get model user class from DB with matching email. 
+        SocialVintageServer.Models.User? user = context.GetUser(userEmail);
+        Item? theItem = context.GetItem(itemId);
+        //Clear the tracking of all objects to avoid double tracking
+        context.ChangeTracker.Clear();
+
+        if (user == null)
+        {
+            return Unauthorized("User is not found in the database");
+        }
+
+        if (theItem == null)
+        {
+            return BadRequest("Item does not exist");
+        }
+
+        if (theItem.StoreId != user.UserId)
+        {
+            return Unauthorized("Trying to add image to an item from a different store");
+        }
+
+        //First add a database table row for the itemImage to get its id
+        ItemsImage itemImage = new ItemsImage()
+        {
+            ItemId = itemId,
+        };
+        context.ItemsImages.Add(itemImage);
+        context.SaveChanges();
+
+
+
+        //Read all files sent
+        long imagesSize = 0;
+
+        if (file.Length > 0)
+        {
+            //Check the file extention!
+            string[] allowedExtentions = { ".png", ".jpg" };
+            string extention = "";
+            if (file.FileName.LastIndexOf(".") > 0)
+            {
+                extention = file.FileName.Substring(file.FileName.LastIndexOf(".")).ToLower();
+            }
+            if (!allowedExtentions.Where(e => e == extention).Any())
+            {
+                //Extention is not supported
+                return BadRequest("File sent with non supported extention");
+            }
+
+            //Build path in the web root (better to a specific folder under the web root
+            string filePath = $"{this.webHostEnvironment.WebRootPath}\\itemImages\\{itemImage.Id}{extention}";
+
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await file.CopyToAsync(stream);
+
+                if (IsImage(stream))
+                {
+                    imagesSize += stream.Length;
+                }
+                else
+                {
+                    //Delete the file if it is not supported!
+                    System.IO.File.Delete(filePath);
+                    context.ItemsImages.Remove(itemImage);
+                    context.SaveChanges();
+                }
+
+            }
+
+        }
+            SocialVintageServer.DTO.ItemsImageDto dto = new ItemsImageDto(itemImage);
+            dto.ImagePath = GetItemImageVirtualPath(dto.Id);
+            return Ok(dto);
+
+        
+    }
 
     [HttpPost("UploadProfileImage")]
     public async Task<IActionResult> UploadProfileImageAsync(IFormFile file, [FromQuery] bool IsStore)
@@ -298,9 +416,8 @@ public class SocialVintageAPIController : ControllerBase
             dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
             return Ok(dtoUser);
         }
-        
-    }
 
+    }
     //Helper functions
 
     //this function gets a file stream and check if it is an image
@@ -385,7 +502,6 @@ public class SocialVintageAPIController : ControllerBase
             ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
             p.Store.ProfileImagePath = GetProfileImageVirtualPath(p.Store.StoreId, true);
             items.Add(p);
-            
         }
 
         return Ok(items);

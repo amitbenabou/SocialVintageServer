@@ -7,6 +7,10 @@ namespace SocialVintageServer.DTO
         public int Id { get; set; }
 
         public int ItemId { get; set; }
+        public string ImagePath
+        {
+            get; set;
+        }
 
         public ItemsImageDto() { }
 

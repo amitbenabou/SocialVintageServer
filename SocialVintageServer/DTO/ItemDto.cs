@@ -20,9 +20,9 @@ namespace SocialVintageServer.DTO
 
         public string ItemInfo { get; set; } = null!;
 
-        public virtual ICollection<string> ItemsImages { get; set; } = new List<string>();
+        public virtual ICollection<string>? ItemsImages { get; set; } = new List<string>();
 
-        public virtual StoreDto Store { get; set; } = null!;
+        public virtual StoreDto? Store { get; set; } = null!;
 
         public ItemDto() { }
         public ItemDto(Models.Item item, string folderPath)
@@ -36,11 +36,15 @@ namespace SocialVintageServer.DTO
             StoreId = item.StoreId;
             ItemInfo = item.ItemInfo;
             ItemsImages = new List<string>();
-            foreach(var image in item.ItemsImages)
+            if (item.ItemsImages != null)
             {
-                ItemsImages.Add(GetItemImagePath(folderPath, item.ItemId));
+                foreach (var image in item.ItemsImages)
+                {
+                    ItemsImages.Add(GetItemImagePath(folderPath, item.ItemId));
+                }
             }
-            Store = new StoreDto(item.Store);
+            if (item.Store != null)
+                Store = new StoreDto(item.Store);
         }
         //this method create a virtual path to each image
         private string GetItemImagePath(string folderPath, int id)
