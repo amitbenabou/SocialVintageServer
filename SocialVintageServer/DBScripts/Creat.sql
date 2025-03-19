@@ -133,8 +133,15 @@ Go
 insert into Item values ('medium', 'Nike', 'Red', 100, 1, 'T Shirt')
 Go
 
+insert into Item values ('medium', 'zara', 'pink', 45, 1, 'strapless pink top')
+Go
+
 insert into ItemsImages values (1)
 go
+
+insert into ItemsImages values (2)
+go
+
 SELECT * FROM [User];
 select * from Item
 select * from ItemsImages

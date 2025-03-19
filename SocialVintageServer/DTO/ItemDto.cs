@@ -20,7 +20,7 @@ namespace SocialVintageServer.DTO
 
         public string ItemInfo { get; set; } = null!;
 
-        public virtual ICollection<string>? ItemsImages { get; set; } = new List<string>();
+        public virtual ICollection<ItemsImageDto>? ItemsImages { get; set; } = new List<ItemsImageDto>();
 
         public virtual StoreDto? Store { get; set; } = null!;
 
@@ -35,12 +35,14 @@ namespace SocialVintageServer.DTO
             Price = item.Price;
             StoreId = item.StoreId;
             ItemInfo = item.ItemInfo;
-            ItemsImages = new List<string>();
+            ItemsImages = new List<ItemsImageDto>();
             if (item.ItemsImages != null)
             {
                 foreach (var image in item.ItemsImages)
                 {
-                    ItemsImages.Add(GetItemImagePath(folderPath, item.ItemId));
+                    ItemsImageDto imageDto = new ItemsImageDto(image);
+                    imageDto.ImagePath = GetItemImagePath(folderPath, imageDto.Id);
+                    ItemsImages.Add(imageDto);
                 }
             }
             if (item.Store != null)
