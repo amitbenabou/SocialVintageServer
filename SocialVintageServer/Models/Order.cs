@@ -18,6 +18,9 @@ public partial class Order
 
     public int StatusId { get; set; }
 
+    [InverseProperty("Order")]
+    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
     [ForeignKey("StatusId")]
     [InverseProperty("Orders")]
     public virtual Status Status { get; set; } = null!;

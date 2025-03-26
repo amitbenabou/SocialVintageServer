@@ -23,9 +23,13 @@ public partial class SocialVintageDbContext : DbContext
 
     public virtual DbSet<Order> Orders { get; set; }
 
+    public virtual DbSet<OrderItem> OrderItems { get; set; }
+
     public virtual DbSet<Review> Reviews { get; set; }
 
     public virtual DbSet<Shipping> Shippings { get; set; }
+
+    public virtual DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
 
     public virtual DbSet<Status> Statuses { get; set; }
 
@@ -41,12 +45,12 @@ public partial class SocialVintageDbContext : DbContext
     {
         modelBuilder.Entity<Catagory>(entity =>
         {
-            entity.HasKey(e => e.CatagoryId).HasName("PK__Catagory__3468E3B396B007E3");
+            entity.HasKey(e => e.CatagoryId).HasName("PK__Catagory__3468E3B351750795");
         });
 
         modelBuilder.Entity<Item>(entity =>
         {
-            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838B8344BC78");
+            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838B623C055E");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Items)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -55,7 +59,7 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<ItemsImage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ItemsIma__3214EC078B668286");
+            entity.HasKey(e => e.Id).HasName("PK__ItemsIma__3214EC077A529892");
 
             entity.HasOne(d => d.Item).WithMany(p => p.ItemsImages)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -64,7 +68,7 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BCF224488C9");
+            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BCF64A641FA");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -75,32 +79,58 @@ public partial class SocialVintageDbContext : DbContext
                 .HasConstraintName("FK__Order__UserId__37A5467C");
         });
 
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasKey(e => e.OrderItemId).HasName("PK__OrderIte__57ED0681288A01E6");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.OrderItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__OrderItem__ItemI__3C69FB99");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__OrderItem__Order__3B75D760");
+        });
+
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.ReviewId).HasName("PK__Review__74BC79CEFCE47D09");
+            entity.HasKey(e => e.ReviewId).HasName("PK__Review__74BC79CE2BDBC7AC");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Reviews)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__StoreId__3C69FB99");
+                .HasConstraintName("FK__Review__StoreId__440B1D61");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reviews)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__UserId__3B75D760");
+                .HasConstraintName("FK__Review__UserId__4316F928");
         });
 
         modelBuilder.Entity<Shipping>(entity =>
         {
-            entity.HasKey(e => e.OptionId).HasName("PK__Shipping__92C7A1FF56E176C3");
+            entity.HasKey(e => e.OptionId).HasName("PK__Shipping__92C7A1FF5ECF5B2A");
+        });
+
+        modelBuilder.Entity<ShoppingCartItem>(entity =>
+        {
+            entity.HasKey(e => e.CartItemId).HasName("PK__Shopping__488B0B0A901FA3CF");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.ShoppingCartItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ShoppingC__ItemI__403A8C7D");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ShoppingCartItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ShoppingC__UserI__3F466844");
         });
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.StatusId).HasName("PK__Status__C8EE206399F54917");
+            entity.HasKey(e => e.StatusId).HasName("PK__Status__C8EE20636B0930F8");
         });
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.StoreId).HasName("PK__Store__3B82F101562C2171");
+            entity.HasKey(e => e.StoreId).HasName("PK__Store__3B82F101DC712476");
 
             entity.Property(e => e.StoreId).ValueGeneratedNever();
 
@@ -119,7 +149,7 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4CD74A0D62");
+            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4C612C621A");
 
             entity.HasMany(d => d.Stores).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(
@@ -127,14 +157,14 @@ public partial class SocialVintageDbContext : DbContext
                     r => r.HasOne<Store>().WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__FavoriteS__Store__403A8C7D"),
+                        .HasConstraintName("FK__FavoriteS__Store__47DBAE45"),
                     l => l.HasOne<User>().WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__FavoriteS__UserI__3F466844"),
+                        .HasConstraintName("FK__FavoriteS__UserI__46E78A0C"),
                     j =>
                     {
-                        j.HasKey("UserId", "StoreId").HasName("PK__Favorite__1430E35C60439249");
+                        j.HasKey("UserId", "StoreId").HasName("PK__Favorite__1430E35C3B9A89A6");
                         j.ToTable("FavoriteStores");
                     });
         });

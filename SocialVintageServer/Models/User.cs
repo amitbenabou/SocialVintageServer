@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SocialVintageServer.Models;
 
 [Table("User")]
-[Index("UserMail", Name = "UQ__User__52ABC69BF9F46385", IsUnique = true)]
+[Index("UserMail", Name = "UQ__User__52ABC69B8965360A", IsUnique = true)]
 public partial class User
 {
     [Key]
@@ -32,6 +32,9 @@ public partial class User
 
     [InverseProperty("User")]
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();
 
     [InverseProperty("StoreNavigation")]
     public virtual Store? Store { get; set; }

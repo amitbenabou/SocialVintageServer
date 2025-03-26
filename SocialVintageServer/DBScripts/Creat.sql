@@ -88,6 +88,22 @@ FOREIGN KEY (UserId) REFERENCES [User](UserId),
 FOREIGN KEY (StatusId) REFERENCES [Status](StatusId)
 );
 
+
+CREATE TABLE [OrderItem]
+(
+OrderItemId int primary key identity,
+OrderId int foreign key references [Order](OrderId) not null,
+ItemId int foreign key references [Item](ItemId) not null,
+);
+
+CREATE TABLE [ShoppingCartItem]
+(
+CartItemId int primary key identity,
+UserId int foreign key references [User](UserId) not null,
+ItemId int foreign key references [Item](ItemId) not null,
+);
+
+
 CREATE TABLE Review
 (
 ReviewId int primary key identity,
