@@ -157,6 +157,42 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
+    [HttpPost("AddToBag")]
+    public IActionResult AddToBag([FromBody] SocialVintageServer.DTO.ShoppingCartItemDto cartItemDto)
+    {
+        try
+        {
+            //Check if who is logged in
+            string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("User is not logged in");
+            }
+            User? theUser = context.GetUser(userEmail);
+            if (theUser == null)
+            {
+                return Unauthorized("User does not exist or trying to add item to a different store");
+            }
+
+            //Create model item class
+            SocialVintageServer.Models.ShoppingCartItem modelsCartItem = cartItemDto.GetModel();
+
+            context.ShoppingCartItems.Add(modelsCartItem);
+            context.SaveChanges();
+
+            
+
+            //Item was added! (without images!!)
+            SocialVintageServer.DTO.ShoppingCartItemDto dtocartitem = new SocialVintageServer.DTO.ShoppingCartItemDto(modelsCartItem);
+            return Ok(dtocartitem);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
 
 
     [HttpPost("updateprofile")]
@@ -194,6 +230,8 @@ public class SocialVintageAPIController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", error = ex.Message });
         }
     }
+
+
 
     //
     private string GetItemImageVirtualPath(int itemImageId)

@@ -17,5 +17,11 @@ public partial class SocialVintageDbContext : DbContext
         return this.Items.Where(it => it.ItemId== id).Include(it => it.Store).Include(it=>it.ItemsImages)
                             .FirstOrDefault();
     }
+
+    //public ShoppingCartItem? GetCartItem(int id)
+    //{
+    //    return this.ShoppingCartItems.Where(it => it.CartItemId == id).Include(it => it.Store).Include(it => it.ItemsImages)
+    //                        .FirstOrDefault();
+    //}
 }
 

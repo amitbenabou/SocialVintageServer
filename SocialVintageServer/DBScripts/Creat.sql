@@ -160,6 +160,7 @@ go
 
 SELECT * FROM [User];
 select * from Item
+select * from [ShoppingCartItem]
 select * from ItemsImages
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
 Go
