@@ -152,6 +152,9 @@ Go
 insert into Item values ('medium', 'zara', 'pink', 45, 1, 'strapless pink top')
 Go
 
+insert into Item values ('large', 'zara', 'blue', 80, 1, 'blue denim skirt')
+Go
+
 insert into ItemsImages values (1)
 go
 
