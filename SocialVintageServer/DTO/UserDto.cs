@@ -21,10 +21,11 @@ namespace SocialVintageServer.DTO
 
         public string Pswrd { get; set; } = null!;
         public string ProfileImagePath { get; set; } = "";
+        public string PhoneNumber { get; set; } = null!;
 
+        public List<ItemDto> WishListItems { get; set; }
 
-
-        public UserDto(Models.User modelUser)
+        public UserDto(Models.User modelUser, string folderPath)
         {
             this.UserId = modelUser.UserId;
             this.UserName = modelUser.UserName;
@@ -32,6 +33,16 @@ namespace SocialVintageServer.DTO
             this.UserAdress = modelUser.UserAdress;
             this.HasStore = modelUser.HasStore;
             this.Pswrd = modelUser.Pswrd;
+            this.PhoneNumber = modelUser.PhoneNumber;
+            WishListItems = new List<ItemDto>();
+            if (modelUser.Items != null)
+            {
+                foreach (var item in modelUser.Items) 
+                {
+                    ItemDto itemDto = new ItemDto(item, folderPath);
+                    WishListItems.Add(itemDto);
+                }
+            }
         }
 
         public Models.User GetModel()
@@ -43,6 +54,8 @@ namespace SocialVintageServer.DTO
             u.UserAdress = this.UserAdress;
             u.HasStore = this.HasStore;
             u.Pswrd = this.Pswrd;
+            u.PhoneNumber = this.PhoneNumber;
+
             return u;
         }
     }

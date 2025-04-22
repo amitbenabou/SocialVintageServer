@@ -16,14 +16,9 @@ public partial class Order
 
     public DateOnly OrderDate { get; set; }
 
-    public int StatusId { get; set; }
-
+    [ForeignKey("OrderId")]
     [InverseProperty("Order")]
-    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-
-    [ForeignKey("StatusId")]
-    [InverseProperty("Orders")]
-    public virtual Status Status { get; set; } = null!;
+    public virtual Item OrderNavigation { get; set; } = null!;
 
     [ForeignKey("UserId")]
     [InverseProperty("Orders")]

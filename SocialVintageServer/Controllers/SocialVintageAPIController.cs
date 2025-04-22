@@ -47,7 +47,7 @@ public class SocialVintageAPIController : ControllerBase
 
             HttpContext.Session.SetString("LoggedInUser", modelsUser.UserMail);
 
-            SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(modelsUser);
+            SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(modelsUser, this.webHostEnvironment.WebRootPath);
             dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
             return Ok(dtoUser);
         }
@@ -72,7 +72,7 @@ public class SocialVintageAPIController : ControllerBase
             context.SaveChanges();
 
             //User was added!
-            SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(modelsUser);
+            SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(modelsUser, this.webHostEnvironment.WebRootPath);
             dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
             return Ok(dtoUser);
         }
@@ -157,8 +157,8 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
-    [HttpPost("AddToBag")]
-    public IActionResult AddToBag([FromBody] SocialVintageServer.DTO.ShoppingCartItemDto cartItemDto)
+    [HttpPost("AddToWishList")]
+    public IActionResult AddToWishList([FromBody] SocialVintageServer.DTO.ItemDto itemDto)
     {
         try
         {
@@ -174,17 +174,16 @@ public class SocialVintageAPIController : ControllerBase
                 return Unauthorized("User does not exist or trying to add item to a different store");
             }
 
+            Item item = itemDto.GetModel();
             //Create model item class
-            SocialVintageServer.Models.ShoppingCartItem modelsCartItem = cartItemDto.GetModel();
-
-            context.ShoppingCartItems.Add(modelsCartItem);
+            theUser.Items.Add(item);
             context.SaveChanges();
-
+            
             
 
-            //Item was added! (without images!!)
-            SocialVintageServer.DTO.ShoppingCartItemDto dtocartitem = new SocialVintageServer.DTO.ShoppingCartItemDto(modelsCartItem);
-            return Ok(dtocartitem);
+            //Item was added! 
+            UserDto uDto = new UserDto(theUser, this.webHostEnvironment.WebRootPath);
+            return Ok(uDto);
         }
         catch (Exception ex)
         {
@@ -193,7 +192,40 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
+    [HttpPost("RemoveFromWishList")]
+    public IActionResult RemoveFromWishList([FromBody] SocialVintageServer.DTO.ItemDto itemDto)
+    {
+        try
+        {
+            //Check if who is logged in
+            string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("User is not logged in");
+            }
+            User? theUser = context.GetUser(userEmail);
+            if (theUser == null)
+            {
+                return Unauthorized("User does not exist or trying to add item to a different store");
+            }
 
+            Item item = itemDto.GetModel();
+            //Create model item class
+            theUser.Items.Remove(item);
+            context.SaveChanges();
+
+
+
+            //Item was added! 
+            UserDto uDto = new UserDto(theUser, this.webHostEnvironment.WebRootPath);
+            return Ok(uDto);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
 
     [HttpPost("updateprofile")]
     public async Task<IActionResult> UpdateProfile([FromBody] UserDto userDto)
@@ -204,24 +236,14 @@ public class SocialVintageAPIController : ControllerBase
         }
 
         // חיפוש המשתמש לפי Id
-        var user = await context.Users.FindAsync(userDto.UserId);
+        var user = userDto.GetModel();
 
-        if (user == null)
-        {
-            return NotFound($"User with ID {userDto.UserId} not found");
-        }
-
-        // עדכון השדות של המשתמש
-        user.UserName = userDto.UserName;
-        user.UserMail = userDto.UserMail;
-        user.UserAdress = userDto.UserAdress;
-        user.Pswrd = userDto.Pswrd;
-
-
+        
         try
         {
             // שמירת השינויים למסד הנתונים
-            await context.SaveChangesAsync();
+            context.Users.Update(user);
+            context.SaveChanges();
             return Ok(new { message = "Profile updated successfully" });
         }
         catch (Exception ex)
@@ -450,7 +472,7 @@ public class SocialVintageAPIController : ControllerBase
         }
         else
         {
-            SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(user);
+            SocialVintageServer.DTO.UserDto dtoUser = new SocialVintageServer.DTO.UserDto(user, this.webHostEnvironment.WebRootPath);
             dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.UserId);
             return Ok(dtoUser);
         }
@@ -529,10 +551,12 @@ public class SocialVintageAPIController : ControllerBase
         }
         
         List<ItemDto> items = new List<ItemDto>();
+        List<OrderDto> orders = new List<OrderDto>();
 
         List<Item> modelItems = context.Items
                                 .Include(item => item.Store)
                                 .Include(item => item.ItemsImages)
+                                //.Where(item => item.ItemId==)
                                 .ToList();
 
         foreach (Item item in modelItems)

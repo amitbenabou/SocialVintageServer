@@ -32,13 +32,14 @@ public partial class Item
     [InverseProperty("Item")]
     public virtual ICollection<ItemsImage> ItemsImages { get; set; } = new List<ItemsImage>();
 
-    [InverseProperty("Item")]
-    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-
-    [InverseProperty("Item")]
-    public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();
+    [InverseProperty("OrderNavigation")]
+    public virtual Order? Order { get; set; }
 
     [ForeignKey("StoreId")]
     [InverseProperty("Items")]
     public virtual Store Store { get; set; } = null!;
+
+    [ForeignKey("ItemId")]
+    [InverseProperty("Items")]
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

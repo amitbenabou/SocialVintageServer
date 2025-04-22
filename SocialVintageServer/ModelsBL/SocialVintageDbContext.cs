@@ -8,7 +8,7 @@ public partial class SocialVintageDbContext : DbContext
 {
     public User? GetUser(string email)
     {
-        return this.Users.Where(u => u.UserMail == email)
+        return this.Users.Include(u=>u.Items).ThenInclude(it=>it.ItemsImages).Where(u => u.UserMail == email)
                             .FirstOrDefault();
     }
 

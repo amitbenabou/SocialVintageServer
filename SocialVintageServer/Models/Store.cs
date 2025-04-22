@@ -33,14 +33,7 @@ public partial class Store
     [InverseProperty("Stores")]
     public virtual Shipping Option { get; set; } = null!;
 
-    [InverseProperty("Store")]
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-
     [ForeignKey("StoreId")]
     [InverseProperty("Store")]
     public virtual User StoreNavigation { get; set; } = null!;
-
-    [ForeignKey("StoreId")]
-    [InverseProperty("Stores")]
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

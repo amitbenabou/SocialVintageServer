@@ -26,7 +26,8 @@ UserName nvarchar(50) not null,
 UserMail nvarchar(50) unique not null,
 Pswrd nvarchar(50) not null,
 UserAdress nvarchar(50) not null,
-HasStore bit not null
+HasStore bit not null,
+PhoneNumber nvarchar(50) not null
 );
 
 CREATE TABLE [Shipping]
@@ -80,49 +81,25 @@ StatusName nvarchar(50) not null
 
 CREATE TABLE [Order]
 (
-OrderId int primary key identity,
+OrderId int primary key references Item(ItemId) not null,
 UserId int not null,
 OrderDate date not null,
-StatusId int not null,
 FOREIGN KEY (UserId) REFERENCES [User](UserId),
-FOREIGN KEY (StatusId) REFERENCES [Status](StatusId)
 );
 
 
-CREATE TABLE [OrderItem]
-(
-OrderItemId int primary key identity,
-OrderId int foreign key references [Order](OrderId) not null,
-ItemId int foreign key references [Item](ItemId) not null,
-);
 
-CREATE TABLE [ShoppingCartItem]
+CREATE TABLE [WishListItem]
 (
-CartItemId int primary key identity,
 UserId int foreign key references [User](UserId) not null,
 ItemId int foreign key references [Item](ItemId) not null,
+Primary key (UserId, ItemId)
 );
 
 
-CREATE TABLE Review
-(
-ReviewId int primary key identity,
-StoreId int not null,
-UserId int not null,
-ranking nvarchar(10) not null,
-Info nvarchar(70) not null,
-FOREIGN KEY (UserId) REFERENCES [User](UserId),
-FOREIGN KEY (StoreId) REFERENCES [Store](StoreId)
-);
 
-CREATE TABLE FavoriteStores
-(
-StoreId int not null,
-UserId int not null,
-FOREIGN KEY (UserId) REFERENCES [User](UserId),
-FOREIGN KEY (StoreId) REFERENCES [Store](StoreId),
-PRIMARY KEY (UserId, StoreId)
-);
+
+
 
 INSERT INTO [Shipping] (OptionName) Values ('Delivery');
 INSERT INTO [Shipping] (OptionName) Values ('PickUp');
@@ -133,13 +110,9 @@ INSERT INTO Catagory (CatagoryName) Values ('Men');
 INSERT INTO Catagory (CatagoryName) Values ('unisex');
 SELECT * FROM Catagory;
 
-INSERT INTO [Status] (StatusName) Values ('Approved');
-INSERT INTO [Status] (StatusName) Values ('Pending');
-INSERT INTO [Status] (StatusName) Values ('Delivered');
-SELECT * FROM [Status];
 
-Insert Into [User] Values('admin', 'amit@gmail.com', '1011', 'yeshurun 40 hod hasharon', 1);
-Insert Into [User] Values('ofer', 'ofer@gmail.com', '1011', 'yeshurun 40 hod hasharon', 0);
+Insert Into [User] Values('admin', 'amit@gmail.com', '1011', 'yeshurun 40 hod hasharon', 1, '0546287507');
+Insert Into [User] Values('ofer', 'ofer@gmail.com', '1011', 'yeshurun 40 hod hasharon', 0, '0526344450');
 SELECT * FROM [User];
 
 
@@ -163,8 +136,8 @@ go
 
 SELECT * FROM [User];
 select * from Item
-select * from [ShoppingCartItem]
-select * from ItemsImages
+select * from WishListItem
+select * from WishListItem
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
 Go
 
