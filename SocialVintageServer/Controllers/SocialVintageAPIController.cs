@@ -253,6 +253,32 @@ public class SocialVintageAPIController : ControllerBase
         }
     }
 
+    [HttpPost("updatestoreprofile")]
+    public async Task<IActionResult> UpdateStoreProfile([FromBody] StoreDto storeDto)
+    {
+        if (storeDto == null)
+        {
+            return BadRequest("Store data is null");
+        }
+
+        // חיפוש המשתמש לפי Id
+        var store = storeDto.GetModel();
+
+
+        try
+        {
+            // שמירת השינויים למסד הנתונים
+            context.Stores.Update(store);
+            context.SaveChanges();
+            return Ok(new { message = "Profile updated successfully" });
+        }
+        catch (Exception ex)
+        {
+            // טיפול בשגיאות
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", error = ex.Message });
+        }
+    }
+
 
 
     //

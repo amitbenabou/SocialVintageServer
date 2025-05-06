@@ -137,7 +137,7 @@ go
 SELECT * FROM [User];
 select * from Item
 select * from WishListItem
-select * from WishListItem
+select * from Store
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
 Go
 
