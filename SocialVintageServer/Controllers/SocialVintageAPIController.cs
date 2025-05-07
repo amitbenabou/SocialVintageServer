@@ -279,6 +279,33 @@ public class SocialVintageAPIController : ControllerBase
         }
     }
 
+    //[HttpPost("getstorebyuserid")]
+    //public async Task<IActionResult> GetStoreByUserId([FromBody] UserDto userDto)
+    //{
+    //    if (userDto == null)
+    //    {
+    //        return BadRequest("user data is null");
+    //    }
+
+    //    // חיפוש המשתמש לפי Id
+    //    var user = userDto.GetModel();
+        
+
+
+    //    //try
+    //    //{
+    //    //    // שמירת השינויים למסד הנתונים
+    //    //    context.Stores.Update(store);
+    //    //    context.SaveChanges();
+    //    //    return Ok(new { message = "Profile updated successfully" });
+    //    //}
+    //    //catch (Exception ex)
+    //    //{
+    //    //    // טיפול בשגיאות
+    //    //    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", error = ex.Message });
+    //    //}
+    //}
+
 
 
     //
