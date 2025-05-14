@@ -18,6 +18,10 @@ public partial class SocialVintageDbContext : DbContext
                             .FirstOrDefault();
     }
 
+    public Store? GetStoreById (int id)
+    {
+        return this.Stores.Where(s=> s.StoreId == id).FirstOrDefault();
+    }
     //public ShoppingCartItem? GetCartItem(int id)
     //{
     //    return this.ShoppingCartItems.Where(it => it.CartItemId == id).Include(it => it.Store).Include(it => it.ItemsImages)
