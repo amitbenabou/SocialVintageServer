@@ -17,6 +17,11 @@ public partial class SocialVintageDbContext : DbContext
         return this.Items.Where(it => it.ItemId== id).Include(it => it.Store).Include(it=>it.ItemsImages)
                             .FirstOrDefault();
     }
+    
+    public List<Store> GetAllStores()
+    {
+        return this.Stores.ToList();
+    }
 
     public Store? GetStoreById (int id)
     {

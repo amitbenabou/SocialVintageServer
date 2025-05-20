@@ -608,5 +608,21 @@ public class SocialVintageAPIController : ControllerBase
 
         return Ok(items);
     }
+
+    [HttpGet("GetAllStores")]
+    public IActionResult GetAllStores()
+    {
+        try
+        {
+            List<Store> liststores = context.GetAllStores();
+            return Ok(liststores);
+        }
+        catch (Exception ex)
+        {
+            return Unauthorized(ex.Message);    
+        }
+    }
+
+
 }
 
