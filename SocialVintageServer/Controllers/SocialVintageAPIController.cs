@@ -209,10 +209,24 @@ public class SocialVintageAPIController : ControllerBase
                 return Unauthorized("User does not exist or trying to add item to a different store");
             }
 
-            Item item = itemDto.GetModel();
+            
+            context.ChangeTracker.Clear();
+            Item itemTobDeleted = null;
+            foreach (Item item in theUser.Items)
+            {
+                if (item.ItemId == itemDto.ItemId)
+                {
+                    itemTobDeleted = item;
+                }
+            }
             //Create model item class
-            theUser.Items.Remove(item);
-            context.SaveChanges();
+            if (itemTobDeleted != null)
+            {
+                theUser.Items.Remove(itemTobDeleted);
+                context.Users.Update(theUser);
+                context.SaveChanges();
+            }
+                
 
 
 
@@ -596,7 +610,6 @@ public class SocialVintageAPIController : ControllerBase
         List<Item> modelItems = context.Items
                                 .Include(item => item.Store)
                                 .Include(item => item.ItemsImages)
-                                //.Where(item => item.ItemId==)
                                 .ToList();
 
         foreach (Item item in modelItems)
@@ -608,6 +621,34 @@ public class SocialVintageAPIController : ControllerBase
 
         return Ok(items);
     }
+
+    //[HttpGet("GetWishListItems")]
+    //public IActionResult GetWishListItems()
+    //{
+    //    //Check if who is logged in
+    //    string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+    //    if (string.IsNullOrEmpty(userEmail))
+    //    {
+    //        return Unauthorized("User is not logged in");
+    //    }
+
+    //    List<ItemDto> items = new List<ItemDto>();
+    //    List<OrderDto> orders = new List<OrderDto>();
+
+    //    List<Item> modelItems = context.Items   
+    //                            .Include(item => item.Store)
+    //                            .Include(item => item.ItemsImages)
+    //                            .ToList();
+
+    //    foreach (Item item in modelItems)
+    //    {
+    //        ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
+    //        p.Store.ProfileImagePath = GetProfileImageVirtualPath(p.Store.StoreId, true);
+    //        items.Add(p);
+    //    }
+
+    //    return Ok(items);
+    //}
 
     [HttpGet("GetAllStores")]
     public IActionResult GetAllStores()
@@ -622,6 +663,28 @@ public class SocialVintageAPIController : ControllerBase
             return Unauthorized(ex.Message);    
         }
     }
+
+    //[HttpGet("GetUserWishList")]
+    //public IActionResult GetUserWishList([FromQuery]string username)
+    //{
+    //    //Check if who is logged in
+    //    string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+    //    if (string.IsNullOrEmpty(userEmail))
+    //    {
+    //        return Unauthorized("User is not logged in");
+    //    }
+
+    //    User user = context.Users.Include(u => u.Items).ThenInclude(i => i.ItemsImages).FirstOrDefault(u => u.UserName == username);
+
+    //    if (user == null || user.UserMail != userEmail)
+    //    {
+    //        return Unauthorized("User is not logged in");
+    //    }
+
+    //    user.Items.Select(i => new ItemDto(i, this.webHostEnvironment.WebRootPath));
+
+    //    return Ok(user.Items.ToList());
+    //}
 
 
 }
