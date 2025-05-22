@@ -112,11 +112,13 @@ SELECT * FROM Catagory;
 
 
 Insert Into [User] Values('admin', 'amit@gmail.com', '1011', 'yeshurun 40 hod hasharon', 1, '0546287507');
+Insert Into [User] Values('hadas', 'hadas@gmail.com', 'hadas123', ' hod hasharon', 1, '0546282501');
 Insert Into [User] Values('ofer', 'ofer@gmail.com', '1011', 'yeshurun 40 hod hasharon', 0, '0526344450');
 SELECT * FROM [User];
 
 
 insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (1, 'Amit Store', 'Yeshuron, 40, Hod Hasharon, Israel', 1, 1)
+insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (2, 'hadas Store', 'Yeshuron, 40, Hod Hasharon, Israel', 1, 1)
 Go
 
 insert into Item values ('medium', 'Nike', 'Red', 100, 1, 'T Shirt')

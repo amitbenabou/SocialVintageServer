@@ -594,6 +594,7 @@ public class SocialVintageAPIController : ControllerBase
         return Ok(basic);
     }
 
+    
     [HttpGet("GetItems")]
     public IActionResult GetItems()
     {
@@ -621,6 +622,27 @@ public class SocialVintageAPIController : ControllerBase
 
         return Ok(items);
     }
+
+
+
+
+    [HttpGet("getstoreitems")]
+    public async Task<IActionResult> GetStoreItems(int storeid)
+    {
+        if (storeid == null)
+        {
+            return BadRequest("user data is null");
+        }
+
+        // חיפוש המשתמש לפי Id
+        //var user = userDto.GetModel();
+        List<Item> storeitems = context.GetItemsByStoreId(storeid);
+        return Ok(storeitems);
+    }
+
+
+
+
 
     //[HttpGet("GetWishListItems")]
     //public IActionResult GetWishListItems()
