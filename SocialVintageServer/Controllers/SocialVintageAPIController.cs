@@ -28,7 +28,7 @@ public class SocialVintageAPIController : ControllerBase
         return Ok("Server Responded Successfully");
     }
 
-
+    //פעולת התחברות לאפליקציה בעזרת מייל וסיסמה
     [HttpPost("login")]
     public IActionResult Login([FromBody] SocialVintageServer.DTO.LoginDto loginDto)
     {
@@ -58,6 +58,7 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
+    //פעולת הרשמה הוספת משתמש לאפליקציה
     [HttpPost("register")]
     public IActionResult Register([FromBody] SocialVintageServer.DTO.UserDto userDto)
     {
@@ -83,6 +84,7 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
+    //הוספת חנות 
     [HttpPost("AddStore")]
     public IActionResult AddStore([FromBody] SocialVintageServer.DTO.StoreDto storeDto)
     {
@@ -100,6 +102,7 @@ public class SocialVintageAPIController : ControllerBase
             context.Stores.Add(modelsStore);
             context.SaveChanges();
 
+            //שינוי תכונת חנות של יוזר לחיובית
             User? u = context.GetUser(userEmail);
             if (u != null)
             {
@@ -108,7 +111,7 @@ public class SocialVintageAPIController : ControllerBase
                 context.SaveChanges();
             }
             
-            //User was added!
+            //Store was added!
             SocialVintageServer.DTO.StoreDto dtoStore = new SocialVintageServer.DTO.StoreDto(modelsStore);
             dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.StoreId, true);
             return Ok(dtoStore);
@@ -137,7 +140,7 @@ public class SocialVintageAPIController : ControllerBase
             {
                 return Unauthorized("User does not exist or trying to add item to a different store");
             }
-            //Create model user class
+            //Create model item class
             SocialVintageServer.Models.Item modelsItem = itemDto.GetModel();
 
             context.Items.Add(modelsItem);
@@ -176,6 +179,7 @@ public class SocialVintageAPIController : ControllerBase
 
             Item item = itemDto.GetModel();
             //Create model item class
+             //הוספה לפריטי וויש ליסט של משתמש
             theUser.Items.Add(item);
             context.SaveChanges();
             
@@ -192,6 +196,7 @@ public class SocialVintageAPIController : ControllerBase
 
     }
 
+    //לא עובד כרגע צריך לסדר
     [HttpPost("RemoveFromWishList")]
     public IActionResult RemoveFromWishList([FromBody] SocialVintageServer.DTO.ItemDto itemDto)
     {
@@ -248,11 +253,8 @@ public class SocialVintageAPIController : ControllerBase
         {
             return BadRequest("User data is null");
         }
-
         // חיפוש המשתמש לפי Id
         var user = userDto.GetModel();
-
-        
         try
         {
             // שמירת השינויים למסד הנתונים
@@ -267,6 +269,7 @@ public class SocialVintageAPIController : ControllerBase
         }
     }
 
+    //עדכון פרופיל חנות: כתובת,שם חנות, תמונה וכו
     [HttpPost("updatestoreprofile")]
     public async Task<IActionResult> UpdateStoreProfile([FromBody] StoreDto storeDto)
     {
@@ -274,11 +277,8 @@ public class SocialVintageAPIController : ControllerBase
         {
             return BadRequest("Store data is null");
         }
-
         // חיפוש המשתמש לפי Id
         var store = storeDto.GetModel();
-
-
         try
         {
             // שמירת השינויים למסד הנתונים
@@ -293,6 +293,8 @@ public class SocialVintageAPIController : ControllerBase
         }
     }
 
+
+    //מחזיר את החנות של המשתמש שקיבלנו את הid שלו
     [HttpGet("getstorebyuserid")]
     public async Task<IActionResult> GetStoreByUserId(int userid)
     {
@@ -308,8 +310,7 @@ public class SocialVintageAPIController : ControllerBase
     }
 
 
-
-
+    //מחזיר תמונה של פריט
     private string GetItemImageVirtualPath(int itemImageId)
     {
         string virtualPath = $"/itemImages/{itemImageId}";
@@ -335,6 +336,7 @@ public class SocialVintageAPIController : ControllerBase
         return virtualPath;
     }
 
+    //מחזיר תמונת פרופיל של יוזר
     private string GetProfileImageVirtualPath(int userId, bool IsStore = false)
     {
         string virtualPath = $"/profileImages/{userId}";
@@ -365,7 +367,7 @@ public class SocialVintageAPIController : ControllerBase
         return virtualPath;
     }
 
-
+    //העלאה של תמונת פריט
     [HttpPost("UploadItemImage")]
     public async Task<IActionResult> UploadItemImageAsync(IFormFile file, [FromQuery] int itemId)
     {
@@ -454,6 +456,7 @@ public class SocialVintageAPIController : ControllerBase
         
     }
 
+    //העלאה של תמונת פרופיל
     [HttpPost("UploadProfileImage")]
     public async Task<IActionResult> UploadProfileImageAsync(IFormFile file, [FromQuery] bool IsStore)
     {
@@ -594,7 +597,7 @@ public class SocialVintageAPIController : ControllerBase
         return Ok(basic);
     }
 
-    
+    //מחזיר את כל הפריטים של כל החנויות, רק הפריטים שלא הוזמנו!!!
     [HttpGet("GetItems")]
     public IActionResult GetItems()
     {
@@ -623,9 +626,7 @@ public class SocialVintageAPIController : ControllerBase
         return Ok(items);
     }
 
-
-
-
+    //החזרת פריטים של חנות ספיציפית
     [HttpGet("getstoreitems")]
     public async Task<IActionResult> GetStoreItems(int storeid)
     {
@@ -639,38 +640,6 @@ public class SocialVintageAPIController : ControllerBase
         List<Item> storeitems = context.GetItemsByStoreId(storeid);
         return Ok(storeitems);
     }
-
-
-
-
-
-    //[HttpGet("GetWishListItems")]
-    //public IActionResult GetWishListItems()
-    //{
-    //    //Check if who is logged in
-    //    string? userEmail = HttpContext.Session.GetString("LoggedInUser");
-    //    if (string.IsNullOrEmpty(userEmail))
-    //    {
-    //        return Unauthorized("User is not logged in");
-    //    }
-
-    //    List<ItemDto> items = new List<ItemDto>();
-    //    List<OrderDto> orders = new List<OrderDto>();
-
-    //    List<Item> modelItems = context.Items   
-    //                            .Include(item => item.Store)
-    //                            .Include(item => item.ItemsImages)
-    //                            .ToList();
-
-    //    foreach (Item item in modelItems)
-    //    {
-    //        ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
-    //        p.Store.ProfileImagePath = GetProfileImageVirtualPath(p.Store.StoreId, true);
-    //        items.Add(p);
-    //    }
-
-    //    return Ok(items);
-    //}
 
     [HttpGet("GetAllStores")]
     public IActionResult GetAllStores()
@@ -707,6 +676,35 @@ public class SocialVintageAPIController : ControllerBase
 
     //    return Ok(user.Items.ToList());
     //}
+    //[HttpGet("GetWishListItems")]
+    //public IActionResult GetWishListItems()
+    //{
+    //    //Check if who is logged in
+    //    string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+    //    if (string.IsNullOrEmpty(userEmail))
+    //    {
+    //        return Unauthorized("User is not logged in");
+    //    }
+
+    //    List<ItemDto> items = new List<ItemDto>();
+    //    List<OrderDto> orders = new List<OrderDto>();
+
+    //    List<Item> modelItems = context.Items   
+    //                            .Include(item => item.Store)
+    //                            .Include(item => item.ItemsImages)
+    //                            .ToList();
+
+    //    foreach (Item item in modelItems)
+    //    {
+    //        ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
+    //        p.Store.ProfileImagePath = GetProfileImageVirtualPath(p.Store.StoreId, true);
+    //        items.Add(p);
+    //    }
+
+    //    return Ok(items);
+    //}
+
+    //החזרת כל החנויות
 
 
 }

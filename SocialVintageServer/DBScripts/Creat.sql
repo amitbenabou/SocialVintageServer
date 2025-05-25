@@ -117,7 +117,7 @@ Insert Into [User] Values('ofer', 'ofer@gmail.com', '1011', 'yeshurun 40 hod has
 SELECT * FROM [User];
 
 
-insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (1, 'Amit Store', 'Yeshuron, 40, Hod Hasharon, Israel', 1, 1)
+insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (1, 'Amit Store', 'Yeshuron, 40, Hod Hasharon, Israel', 1, 3)
 insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (2, 'hadas Store', 'Yeshuron, 40, Hod Hasharon, Israel', 1, 1)
 Go
 
@@ -139,6 +139,7 @@ go
 SELECT * FROM [User];
 select * from Item
 select * from WishListItem
+select * from ItemsImages
 select * from Store
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
 Go
