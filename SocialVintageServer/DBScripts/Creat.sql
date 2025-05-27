@@ -80,22 +80,24 @@ StatusId int primary key identity,
 StatusName nvarchar(50) not null
 );
 
-CREATE TABLE [Order]
-(
-OrderId int primary key references Item(ItemId) not null,
-UserId int not null,
-OrderDate date not null,
-FOREIGN KEY (UserId) REFERENCES [User](UserId),
-);
-
-
-
 CREATE TABLE [WishListItem]
 (
 UserId int foreign key references [User](UserId) not null,
 ItemId int foreign key references [Item](ItemId) not null,
 Primary key (UserId, ItemId)
 );
+
+--CREATE TABLE [Order]
+--(
+--OrderId int primary key references Item(ItemId) not null,
+--UserId int not null,
+--OrderDate date not null,
+--FOREIGN KEY (UserId) REFERENCES [User](UserId),
+--);
+
+
+
+
 
 
 
@@ -122,13 +124,13 @@ insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (1, 
 insert into Store (StoreId, StoreName, Adress, OptionId, CatagoryId) values (2, 'hadas Store', 'Yeshuron, 40, Hod Hasharon, Israel', 1, 1)
 Go
 
-insert into Item values ('medium', 'Nike', 'Red', 100, 1, 'T Shirt')
+insert into Item values ('medium', 'Nike', 'Red', 100, 1, 'T Shirt',1)
 Go
 
-insert into Item values ('medium', 'zara', 'pink', 45, 1, 'strapless pink top')
+insert into Item values ('medium', 'zara', 'pink', 45, 1, 'strapless pink top',1)
 Go
 
-insert into Item values ('large', 'zara', 'blue', 80, 1, 'blue denim skirt')
+insert into Item values ('large', 'zara', 'blue', 80, 1, 'blue denim skirt',1)
 Go
 
 insert into ItemsImages values (1)
@@ -138,7 +140,7 @@ insert into ItemsImages values (2)
 go
 
 SELECT * FROM [User];
-select * from Item
+select * from [Item]
 select * from WishListItem
 select * from ItemsImages
 select * from Store
