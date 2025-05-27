@@ -418,6 +418,31 @@ public class SocialVintageAPIController : ControllerBase
         }
     }
 
+    //עדכון פרופיל חנות: כתובת,שם חנות, תמונה וכו
+    [HttpPost("OrderItem")]
+    public IActionResult OrderItem([FromBody] ItemDto itemDto)
+    {
+        if (itemDto == null)
+        {
+            return BadRequest("Item data is null");
+        }
+        // חיפוש המשתמש לפי Id
+        var item = itemDto.GetModel();
+        //mark item as not available
+        item.IsAvailable = false;
+        try
+        {
+            // שמירת השינויים למסד הנתונים
+            context.Items.Update(item);
+            context.SaveChanges();
+            return Ok(new { message = "Item updated successfully" });
+        }
+        catch (Exception ex)
+        {
+            // טיפול בשגיאות
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", error = ex.Message });
+        }
+    }
 
     //מחזיר את החנות של המשתמש שקיבלנו את הid שלו
     [HttpGet("getstorebyuserid")]
@@ -432,6 +457,20 @@ public class SocialVintageAPIController : ControllerBase
         //var user = userDto.GetModel();
          Store store= context.GetStoreById(userid);
         return Ok(store);
+    }
+
+    //מחזיר את החנות של המשתמש שקיבלנו את הid שלו
+    [HttpGet("getUserByStoreId")]
+    public async Task<IActionResult> GetUserByStoreId(int storeId)
+    {
+        
+
+        // חיפוש המשתמש לפי Id
+        User? u = context.Users.Where(uu=>uu.UserId == storeId).FirstOrDefault();
+        if (u == null)
+            return BadRequest();
+        UserDto theUser = new UserDto(u, this.webHostEnvironment.WebRootPath);
+        return Ok(theUser);
     }
 
 
@@ -736,7 +775,7 @@ public class SocialVintageAPIController : ControllerBase
         List<ItemDto> items = new List<ItemDto>();
         List<OrderDto> orders = new List<OrderDto>();
 
-        List<Item> modelItems = context.Items
+        List<Item> modelItems = context.Items.Where(ii=>ii.IsAvailable)
                                 .Include(item => item.Store)
                                 .Include(item => item.ItemsImages)
                                 .ToList();

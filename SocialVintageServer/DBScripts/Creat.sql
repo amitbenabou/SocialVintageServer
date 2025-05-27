@@ -63,6 +63,7 @@ Color nvarchar(50) not null,
 Price nvarchar(50) not null,
 StoreId int not null,
 ItemInfo nvarchar(100) not null,
+IsAvailable bit not null default(1),
 FOREIGN KEY (StoreId) REFERENCES [Store](StoreId)
 );
 

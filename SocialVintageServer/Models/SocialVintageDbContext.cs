@@ -39,12 +39,14 @@ public partial class SocialVintageDbContext : DbContext
     {
         modelBuilder.Entity<Catagory>(entity =>
         {
-            entity.HasKey(e => e.CatagoryId).HasName("PK__Catagory__3468E3B3A2F33DB6");
+            entity.HasKey(e => e.CatagoryId).HasName("PK__Catagory__3468E3B33099176D");
         });
 
         modelBuilder.Entity<Item>(entity =>
         {
-            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838BF7168DDB");
+            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838B37500474");
+
+            entity.Property(e => e.IsAvailable).HasDefaultValue(true);
 
             entity.HasOne(d => d.Store).WithMany(p => p.Items)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -53,7 +55,7 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<ItemsImage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ItemsIma__3214EC071E8AB2B9");
+            entity.HasKey(e => e.Id).HasName("PK__ItemsIma__3214EC07E13858DF");
 
             entity.HasOne(d => d.Item).WithMany(p => p.ItemsImages)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -62,7 +64,7 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BCF351D2C68");
+            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BCFC00E2FDE");
 
             entity.Property(e => e.OrderId).ValueGeneratedNever();
 
@@ -77,17 +79,17 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<Shipping>(entity =>
         {
-            entity.HasKey(e => e.OptionId).HasName("PK__Shipping__92C7A1FF25209424");
+            entity.HasKey(e => e.OptionId).HasName("PK__Shipping__92C7A1FFFF5E4B78");
         });
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.StatusId).HasName("PK__Status__C8EE2063DE756CE8");
+            entity.HasKey(e => e.StatusId).HasName("PK__Status__C8EE20639AA436A8");
         });
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.StoreId).HasName("PK__Store__3B82F10194223AA9");
+            entity.HasKey(e => e.StoreId).HasName("PK__Store__3B82F101B7663B80");
 
             entity.Property(e => e.StoreId).ValueGeneratedNever();
 
@@ -106,7 +108,7 @@ public partial class SocialVintageDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4C2FC00EBD");
+            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4CFD2BE33E");
 
             entity.HasMany(d => d.Items).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(
@@ -121,7 +123,7 @@ public partial class SocialVintageDbContext : DbContext
                         .HasConstraintName("FK__WishListI__UserI__3B75D760"),
                     j =>
                     {
-                        j.HasKey("UserId", "ItemId").HasName("PK__WishList__B0AF2474C5D7DC1C");
+                        j.HasKey("UserId", "ItemId").HasName("PK__WishList__B0AF24740DEF4207");
                         j.ToTable("WishListItem");
                     });
         });

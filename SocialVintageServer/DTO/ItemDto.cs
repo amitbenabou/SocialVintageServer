@@ -19,6 +19,7 @@ namespace SocialVintageServer.DTO
         public int StoreId { get; set; }
 
         public string ItemInfo { get; set; } = null!;
+        public bool IsAvailable { get; set; }
 
         public virtual ICollection<ItemsImageDto>? ItemsImages { get; set; } = new List<ItemsImageDto>();
 
@@ -29,7 +30,7 @@ namespace SocialVintageServer.DTO
         {
             ItemId = item.ItemId;
             Size = item.Size;
-                
+            IsAvailable = item.IsAvailable;    
             Brand = item.Brand;
             Color = item.Color;
             Price = item.Price;
@@ -75,6 +76,7 @@ namespace SocialVintageServer.DTO
             I.Price = this.Price;
             I.StoreId = this.StoreId;
             I.ItemInfo = this.ItemInfo;
+            I.IsAvailable = this.IsAvailable;
           //  I.ItemsImages = this.ItemsImages;
             return I;
         }

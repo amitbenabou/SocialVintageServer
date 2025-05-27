@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SocialVintageServer.Models;
 
 [Table("User")]
-[Index("UserMail", Name = "UQ__User__52ABC69B490E2219", IsUnique = true)]
+[Index("UserMail", Name = "UQ__User__52ABC69B9AB4934A", IsUnique = true)]
 public partial class User
 {
     [Key]

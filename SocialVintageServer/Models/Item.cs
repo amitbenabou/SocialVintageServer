@@ -29,6 +29,8 @@ public partial class Item
     [StringLength(100)]
     public string ItemInfo { get; set; } = null!;
 
+    public bool IsAvailable { get; set; }
+
     [InverseProperty("Item")]
     public virtual ICollection<ItemsImage> ItemsImages { get; set; } = new List<ItemsImage>();
 
