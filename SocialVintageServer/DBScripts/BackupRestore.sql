@@ -44,24 +44,40 @@ Go
 CREATE Database SocialVintageDB;
 Go
 
+use SocialVintageDB
+Go
+
 CREATE USER [AdminUser] FOR LOGIN [AdminLogin];
 Go
 
 ALTER ROLE db_owner ADD MEMBER [AdminUser];
 Go
 
+--Home
+
                USE master;
              
                 ALTER DATABASE SocialVintageDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-                RESTORE DATABASE SocialVintageDB FROM DISK = 'C:\Users\amitb\source\repos\SocialVintageServer\SocialVintageServer\DBScripts' 
+                RESTORE DATABASE SocialVintageDB FROM DISK = 'C:\Users\amitb\source\repos\SocialVintageServer\SocialVintageServer\DBScripts\backup.bak' 
                 WITH REPLACE,
                 MOVE 'SocialVintageDB' TO 'C:\AmitB\SocialVintageDB_data.mdf',   
                 MOVE 'SocialVintageDB_log' TO 'C:\AmitB\SocialVintageDB_log.ldf';     ;
 
                 ALTER DATABASE SocialVintageDB SET MULTI_USER;
+--SCHOOL
+               --USE master;
+             
+               -- ALTER DATABASE SocialVintageDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+               -- RESTORE DATABASE SocialVintageDB FROM DISK = 'C:\Users\User\Source\Repos\SocialVintageServer\SocialVintageServer\wwwroot\..\DBScripts\backup.bak' 
+               -- WITH REPLACE,
+               -- MOVE 'SocialVintageDB' TO 'D:\AmitB\SocialVintageDB_data.mdf',   
+               -- MOVE 'SocialVintageDB_log' TO 'D:\AmitB\SocialVintageDB_log.ldf';     ;
+
+               -- ALTER DATABASE SocialVintageDB SET MULTI_USER;
 
 
-                --C:\Users\User\Source\Repos\SocialVintageServer\SocialVintageServer\wwwroot\..\DBScripts\backup.bak
+
+
 
 --                SELECT d.name DatabaseName, f.name LogicalName,
 --f.physical_name AS PhysicalName,
