@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SocialVintageServer.Models.Catagory">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAIAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Models\Catagory.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Stores" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="SocialVintageServer.Models.Item">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAKAAAQAAgAAAgAAAEAAAAAAAAAAAAAAAgcABAAA=</HashCode>
+      <FileName>Models\Item.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="ItemsImages" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="SocialVintageServer.Models.ItemsImage">
+    <Position X="10.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ItemsImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SocialVintageServer.Models.SocialVintageDbContext">
+    <Position X="12" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAFAAKAAAQAQCEQEAAAAAAAAEAAAAQAgEAAAAQAACAA=</HashCode>
+      <FileName>Models\SocialVintageDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SocialVintageServer.Models.Store">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAKAAAAQCAGIAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Store.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Catagory" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Items" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="SocialVintageServer.Models.User">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAACAAACgAAQAgIAAAAAAAAAQAAAQAAAEA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Store" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
