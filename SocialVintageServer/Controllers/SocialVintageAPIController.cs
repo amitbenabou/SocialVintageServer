@@ -504,6 +504,10 @@ public class SocialVintageAPIController : ControllerBase
     private string GetProfileImageVirtualPath(int userId, bool IsStore = false)
     {
         string virtualPath = $"/profileImages/{userId}";
+        if (IsStore)
+        {
+            virtualPath = $"/profileImages/S{userId}";
+        }
         string path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\{userId}.png";
         if (IsStore)
             path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\S{userId}.png";
@@ -811,7 +815,14 @@ public class SocialVintageAPIController : ControllerBase
         try
         {
             List<Store> liststores = context.GetAllStores();
-            return Ok(liststores);
+            List<StoreDto> items = new List<StoreDto>();
+            foreach (Store store in liststores) 
+            {
+                StoreDto dto = new StoreDto(store);
+                dto.ProfileImagePath = GetProfileImageVirtualPath(dto.StoreId, true);
+                items.Add(dto);
+            }
+            return Ok(items);
         }
         catch (Exception ex)
         {
