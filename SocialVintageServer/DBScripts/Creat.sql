@@ -95,15 +95,6 @@ Primary key (UserId, ItemId)
 --FOREIGN KEY (UserId) REFERENCES [User](UserId),
 --);
 
-
-
-
-
-
-
-
-
-
 INSERT INTO [Shipping] (OptionName) Values ('Delivery');
 INSERT INTO [Shipping] (OptionName) Values ('PickUp');
 SELECT * FROM [Shipping];

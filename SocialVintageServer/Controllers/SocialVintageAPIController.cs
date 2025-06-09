@@ -830,56 +830,47 @@ public class SocialVintageAPIController : ControllerBase
         }
     }
 
-    //[HttpGet("GetUserWishList")]
-    //public IActionResult GetUserWishList([FromQuery]string username)
-    //{
-    //    //Check if who is logged in
-    //    string? userEmail = HttpContext.Session.GetString("LoggedInUser");
-    //    if (string.IsNullOrEmpty(userEmail))
-    //    {
-    //        return Unauthorized("User is not logged in");
-    //    }
+    [HttpGet("GetUserWishList")]
+    public IActionResult GetWishList(int userId)
+    {
+        //Check if who is logged in
+        string? userEmail = HttpContext.Session.GetString("LoggedInUser");
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized("User is not logged in");
+        }
 
-    //    User user = context.Users.Include(u => u.Items).ThenInclude(i => i.ItemsImages).FirstOrDefault(u => u.UserName == username);
+        var user = context.Users
+            .Include(u => u.Items) // בהנחה שזה הקשר לרשימת הפריטים
+            .FirstOrDefault(u => u.UserId == userId);
 
-    //    if (user == null || user.UserMail != userEmail)
-    //    {
-    //        return Unauthorized("User is not logged in");
-    //    }
+        if (user == null)
+        {
+            return NotFound($"User with id {userId} not found");
+        }
 
-    //    user.Items.Select(i => new ItemDto(i, this.webHostEnvironment.WebRootPath));
+        var folderPath = this.webHostEnvironment.WebRootPath;
 
-    //    return Ok(user.Items.ToList());
-    //}
-    //[HttpGet("GetWishListItems")]
-    //public IActionResult GetWishListItems()
-    //{
-    //    //Check if who is logged in
-    //    string? userEmail = HttpContext.Session.GetString("LoggedInUser");
-    //    if (string.IsNullOrEmpty(userEmail))
-    //    {
-    //        return Unauthorized("User is not logged in");
-    //    }
+        var wishListItems = new List<ItemDto>();
+        if (user.Items != null)
+        {
+            foreach (var item in user.Items)
+            {
+                wishListItems.Add(new ItemDto(item, folderPath));
+            }
+        }
 
-    //    List<ItemDto> items = new List<ItemDto>();
-    //    List<OrderDto> orders = new List<OrderDto>();
+        //foreach (Item item in modelItems)
+        //{
+        //    ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
+        //    p.Store.ProfileImagePath = GetProfileImageVirtualPath(p.Store.StoreId, true);
+        //    items.Add(p);
+        //}
 
-    //    List<Item> modelItems = context.Items   
-    //                            .Include(item => item.Store)
-    //                            .Include(item => item.ItemsImages)
-    //                            .ToList();
+        return Ok(wishListItems);
+    }
 
-    //    foreach (Item item in modelItems)
-    //    {
-    //        ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
-    //        p.Store.ProfileImagePath = GetProfileImageVirtualPath(p.Store.StoreId, true);
-    //        items.Add(p);
-    //    }
 
-    //    return Ok(items);
-    //}
-
-    //החזרת כל החנויות
 
 
 }
