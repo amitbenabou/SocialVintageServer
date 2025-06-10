@@ -35,11 +35,11 @@ namespace SocialVintageServer.DTO
             this.Pswrd = modelUser.Pswrd;
             this.PhoneNumber = modelUser.PhoneNumber;
             WishListItems = new List<ItemDto>();
-            if (modelUser.Items != null)
+            if (modelUser.WishListItems != null)
             {
-                foreach (var item in modelUser.Items) 
+                foreach (var item in modelUser.WishListItems) 
                 {
-                    ItemDto itemDto = new ItemDto(item, folderPath);
+                    ItemDto itemDto = new ItemDto(item.Item, folderPath);
                     WishListItems.Add(itemDto);
                 }
             }

@@ -31,6 +31,8 @@ public partial class SocialVintageDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<WishListItem> WishListItems { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server = (localdb)\\MSSQLLocalDB;Initial Catalog=SocialVintageDB;User ID=AdminLogin;Password=amitbe1011!;");
@@ -109,23 +111,19 @@ public partial class SocialVintageDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4CFD2BE33E");
+        });
 
-            entity.HasMany(d => d.Items).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "WishListItem",
-                    r => r.HasOne<Item>().WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__WishListI__ItemI__3C69FB99"),
-                    l => l.HasOne<User>().WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__WishListI__UserI__3B75D760"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "ItemId").HasName("PK__WishList__B0AF24740DEF4207");
-                        j.ToTable("WishListItem");
-                    });
+        modelBuilder.Entity<WishListItem>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.ItemId }).HasName("PK__WishList__B0AF24740DEF4207");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.WishListItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__WishListI__ItemI__3C69FB99");
+
+            entity.HasOne(d => d.User).WithMany(p => p.WishListItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__WishListI__UserI__3B75D760");
         });
 
         OnModelCreatingPartial(modelBuilder);

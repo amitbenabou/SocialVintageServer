@@ -303,9 +303,14 @@ public class SocialVintageAPIController : ControllerBase
             }
 
             Item item = itemDto.GetModel();
+            WishListItem wItem = new WishListItem()
+            {
+                ItemId = item.ItemId,
+                UserId = theUser.UserId
+            };
             //Create model item class
              //הוספה לפריטי וויש ליסט של משתמש
-            theUser.Items.Add(item);
+            theUser.WishListItems.Add(wItem);
             context.SaveChanges();
             
             
@@ -341,8 +346,8 @@ public class SocialVintageAPIController : ControllerBase
 
             
             context.ChangeTracker.Clear();
-            Item itemTobDeleted = null;
-            foreach (Item item in theUser.Items)
+            WishListItem itemTobDeleted = null;
+            foreach (WishListItem item in theUser.WishListItems)
             {
                 if (item.ItemId == itemDto.ItemId)
                 {
@@ -352,8 +357,7 @@ public class SocialVintageAPIController : ControllerBase
             //Create model item class
             if (itemTobDeleted != null)
             {
-                theUser.Items.Remove(itemTobDeleted);
-                context.Users.Update(theUser);
+                context.Entry(itemTobDeleted).State = EntityState.Deleted;
                 context.SaveChanges();
             }
                 
@@ -840,9 +844,7 @@ public class SocialVintageAPIController : ControllerBase
             return Unauthorized("User is not logged in");
         }
 
-        var user = context.Users
-            .Include(u => u.Items) // בהנחה שזה הקשר לרשימת הפריטים
-            .FirstOrDefault(u => u.UserId == userId);
+        var user = context.GetUser(userEmail);
 
         if (user == null)
         {
@@ -852,11 +854,11 @@ public class SocialVintageAPIController : ControllerBase
         var folderPath = this.webHostEnvironment.WebRootPath;
 
         var wishListItems = new List<ItemDto>();
-        if (user.Items != null)
+        if (user.WishListItems != null)
         {
-            foreach (var item in user.Items)
+            foreach (var item in user.WishListItems)
             {
-                wishListItems.Add(new ItemDto(item, folderPath));
+                wishListItems.Add(new ItemDto(item.Item, folderPath));
             }
         }
 

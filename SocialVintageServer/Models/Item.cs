@@ -41,7 +41,6 @@ public partial class Item
     [InverseProperty("Items")]
     public virtual Store Store { get; set; } = null!;
 
-    [ForeignKey("ItemId")]
-    [InverseProperty("Items")]
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    [InverseProperty("Item")]
+    public virtual ICollection<WishListItem> WishListItems { get; set; } = new List<WishListItem>();
 }

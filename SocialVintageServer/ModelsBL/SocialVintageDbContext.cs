@@ -10,7 +10,8 @@ public partial class SocialVintageDbContext : DbContext
     //פעולה מקבלת מייל של משתמש ומחזירה את המשתמש כולו
     public User? GetUser(string email)
     {
-        return this.Users.Include(u=>u.Items).ThenInclude(it=>it.ItemsImages).Where(u => u.UserMail == email)
+        return this.Users.Include(u=>u.WishListItems).
+            ThenInclude(it => it.Item).ThenInclude(it=>it.ItemsImages).Where(u => u.UserMail == email)
                             .FirstOrDefault();
     }
 

@@ -87,6 +87,9 @@ ItemId int foreign key references [Item](ItemId) not null,
 Primary key (UserId, ItemId)
 );
 
+ALTER TABLE [WishListItem] Add FakeCol bit default(0) NOT NULL
+go
+
 --CREATE TABLE [Order]
 --(
 --OrderId int primary key references Item(ItemId) not null,

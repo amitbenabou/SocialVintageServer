@@ -36,7 +36,6 @@ public partial class User
     [InverseProperty("StoreNavigation")]
     public virtual Store? Store { get; set; }
 
-    [ForeignKey("UserId")]
-    [InverseProperty("Users")]
-    public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+    [InverseProperty("User")]
+    public virtual ICollection<WishListItem> WishListItems { get; set; } = new List<WishListItem>();
 }

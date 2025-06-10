@@ -55,25 +55,25 @@ Go
 
 --Home
 
-               USE master;
-             
-                ALTER DATABASE SocialVintageDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-                RESTORE DATABASE SocialVintageDB FROM DISK = 'C:\Users\amitb\source\repos\SocialVintageServer\SocialVintageServer\DBScripts\backup.bak' 
-                WITH REPLACE,
-                MOVE 'SocialVintageDB' TO 'C:\AmitB\SocialVintageDB_data.mdf',   
-                MOVE 'SocialVintageDB_log' TO 'C:\AmitB\SocialVintageDB_log.ldf';     ;
-
-                ALTER DATABASE SocialVintageDB SET MULTI_USER;
---SCHOOL
                --USE master;
              
                -- ALTER DATABASE SocialVintageDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-               -- RESTORE DATABASE SocialVintageDB FROM DISK = 'C:\Users\User\Source\Repos\SocialVintageServer\SocialVintageServer\wwwroot\..\DBScripts\backup.bak' 
+               -- RESTORE DATABASE SocialVintageDB FROM DISK = 'C:\Users\amitb\source\repos\SocialVintageServer\SocialVintageServer\DBScripts\backup.bak' 
                -- WITH REPLACE,
-               -- MOVE 'SocialVintageDB' TO 'D:\AmitB\SocialVintageDB_data.mdf',   
-               -- MOVE 'SocialVintageDB_log' TO 'D:\AmitB\SocialVintageDB_log.ldf';     ;
+               -- MOVE 'SocialVintageDB' TO 'C:\AmitB\SocialVintageDB_data.mdf',   
+               -- MOVE 'SocialVintageDB_log' TO 'C:\AmitB\SocialVintageDB_log.ldf';     ;
 
                -- ALTER DATABASE SocialVintageDB SET MULTI_USER;
+--SCHOOL
+               USE master;
+             
+                ALTER DATABASE SocialVintageDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+                RESTORE DATABASE SocialVintageDB FROM DISK = 'C:\Users\User\Source\Repos\SocialVintageServer\SocialVintageServer\wwwroot\..\DBScripts\backup.bak' 
+                WITH REPLACE,
+                MOVE 'SocialVintageDB' TO 'D:\AmitB\SocialVintageDB_data.mdf',   
+                MOVE 'SocialVintageDB_log' TO 'D:\AmitB\SocialVintageDB_log.ldf';     ;
+
+                ALTER DATABASE SocialVintageDB SET MULTI_USER;
 
 
 
