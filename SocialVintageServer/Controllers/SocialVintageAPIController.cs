@@ -306,7 +306,8 @@ public class SocialVintageAPIController : ControllerBase
             WishListItem wItem = new WishListItem()
             {
                 ItemId = item.ItemId,
-                UserId = theUser.UserId
+                UserId = theUser.UserId,
+                Item = item
             };
             //Create model item class
              //הוספה לפריטי וויש ליסט של משתמש
@@ -807,10 +808,16 @@ public class SocialVintageAPIController : ControllerBase
             return BadRequest("user data is null");
         }
 
+        List<ItemDto> items = new List<ItemDto>();
         // חיפוש המשתמש לפי Id
         //var user = userDto.GetModel();
         List<Item> storeitems = context.GetItemsByStoreId(storeid);
-        return Ok(storeitems);
+        foreach (Item item in storeitems)
+        {
+            ItemDto p = new ItemDto(item, this.webHostEnvironment.WebRootPath);
+            items.Add(p);
+        }
+        return Ok(items);
     }
 
     [HttpGet("GetAllStores")]

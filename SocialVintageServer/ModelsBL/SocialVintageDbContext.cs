@@ -38,7 +38,7 @@ public partial class SocialVintageDbContext : DbContext
     //פעולה מקבלת id של חנות ומחזירה את הפריטים של החנות
     public List<Item>? GetItemsByStoreId(int id)
     {
-        return this.Items.Where(i => i.StoreId == id).Where(ii => ii.IsAvailable).ToList();
+        return this.Items.Where(i => i.StoreId == id).Where(ii => ii.IsAvailable).Include(it => it.ItemsImages).ToList();
     }
 
     //מקבלת id של משתמש ומחזירה את הפריטים שנמצאים בוויש ליסט שלו. 
