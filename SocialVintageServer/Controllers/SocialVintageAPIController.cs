@@ -267,6 +267,8 @@ public class SocialVintageAPIController : ControllerBase
             }
             //Create model item class
             SocialVintageServer.Models.Item modelsItem = itemDto.GetModel();
+            //mark item as not available
+            modelsItem.IsAvailable = true;
 
             context.Items.Add(modelsItem);
             context.SaveChanges();

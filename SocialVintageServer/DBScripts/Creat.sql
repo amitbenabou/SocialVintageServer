@@ -141,6 +141,9 @@ select * from Store
 CREATE LOGIN [AdminLogin] WITH PASSWORD = 'amitbe1011!';
 Go
 
+DELETE FROM [User] WHERE UserId='10'
+UPDATE Item Set IsAvailable='1' Where ItemId = '4' 
+
 CREATE USER [AdminUser] FOR LOGIN [AdminLogin];
 Go
 
